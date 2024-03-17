@@ -51,6 +51,7 @@ export async function messageSender(msg, bot) {
 
         return bot.sendMessage(chat_id, 'Введите команду /start для обработки заявки на участие')
     } catch (e) {
+        console.log(e)
         return bot.sendMessage(chat_id, e.message);
     }
 }

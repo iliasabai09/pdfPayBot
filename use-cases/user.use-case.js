@@ -55,8 +55,8 @@ export class UserUseCase {
             const user = NodeCacheService.getCache(chat_id);
             validateUserSave(user);
             await createUser(user);
-            await NotificateTelegramService.setSavedUser(user);
-            NodeCacheService.deleteCache(chat_id, bot);
+            await NotificateTelegramService.setSavedUser(user, bot);
+            NodeCacheService.deleteCache(chat_id);
         } catch (e) {
             throw new Error(e.message)
         }
