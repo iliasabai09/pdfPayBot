@@ -50,13 +50,13 @@ export class UserUseCase {
         NodeCacheService.setCache(user.chat_id, user);
     }
 
-    static async saveUserToBd(chat_id) {
+    static async saveUserToBd(chat_id, bot) {
         try {
             const user = NodeCacheService.getCache(chat_id);
             validateUserSave(user);
             await createUser(user);
             await NotificateTelegramService.setSavedUser(user);
-            NodeCacheService.deleteCache(chat_id);
+            NodeCacheService.deleteCache(chat_id, bot);
         } catch (e) {
             throw new Error(e.message)
         }

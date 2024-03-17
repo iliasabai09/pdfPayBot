@@ -6,7 +6,6 @@ import {USER_ACTIVE_STATUS} from "../shared/constants/constants.js";
 import {validateInstagram} from "../validators/validateInstagram.js";
 import {setCheckMessage} from "../messages/setCheckMessage.js";
 import {validatePdf} from "../validators/validatePdf.js";
-import {validateUserSave} from "../validators/validateUserSave.js";
 
 export async function messageSender(msg, bot) {
     const {
@@ -34,7 +33,7 @@ export async function messageSender(msg, bot) {
         }
 
         if (message === '/finish') {
-            await UserUseCase.saveUserToBd(chat_id);
+            await UserUseCase.saveUserToBd(chat_id, bot);
             return bot.sendMessage(chat_id, 'Заявка успешно сохранена! 🤣')
         }
 
