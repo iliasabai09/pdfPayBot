@@ -1,39 +1,14 @@
 import TelegramApi from "node-telegram-bot-api";
-import ExcelJS from "exceljs";
+import {botCommands} from "./commands/bot_commands.js";
+import {UserUseCase} from "./use-cases/user.use-case.js";
+import {messageSender} from "./sender/messageTypes.js";
 
 const token = "6597188056:AAFS8Xq9cFgUQTI8dbWbg2XuyLb8EYv2gIU";
-const workbook = new ExcelJS.Workbook();
 const bot = new TelegramApi(token, {polling: true});
 
-
+await bot.setMyCommands(botCommands);
 bot.on("message", async (msg) => {
-	const chatId = msg.chat.id;
-	const username = msg.from.username;
-
-	if (msg.document) {
-		// Получаем информацию о файле
-		const fileId = msg.document.file_id;
-		const username = msg.from.username;
-		// Получаем ссылку на файл
-		bot.getFileLink(fileId).then((fileLink) => {
-			// Отправляем ссылку обратно в чат
-			bot.sendMessage(chatId, `Ссылка на файл: ${fileLink}`);
-			bot.sendMessage(5000816492, `Пользователь @${username} отправил документ ${fileLink}`);
-		}).catch((error) => {
-			console.error("Ошибка получения ссылки на файл:", error);
-		});
-	} else {
-		bot.sendMessage(chatId, "Пожалуйста, отправьте файл.");
-	}
+	if (!UserUseCase.getUserFromCache(msg)) UserUseCase.setUserToCache(msg);
+	await messageSender(msg, bot)
 });
 
-
-async function sendFile(chatId) {
-	bot.sendDocument(chatId, "example.xlsx")
-		.then(sent => {
-			console.log('Документ успешно отправлен:', sent);
-		})
-		.catch(error => {
-			console.error('Ошибка при отправке документа:', error);
-		});
-}
